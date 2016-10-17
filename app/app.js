@@ -14,7 +14,9 @@ myNinjaApp.config(['$routeProvider', function($routeProvider){
     });
 }]);
 
-myNinjaApp.controller('NinjaController',['$scope',function($scope){
+myNinjaApp.controller('NinjaController',['$scope','$http',function($scope, $http){
+
+  var userId = 1;
 
   $scope.removeNinja = function(ninja) {
     var removedNinja = $scope.ninjas.indexOf(ninja)
@@ -22,59 +24,35 @@ myNinjaApp.controller('NinjaController',['$scope',function($scope){
   }
 
   $scope.addNinja = function() {
+    $scope.today = new Date();
+
+    console.log($scope.today)
     $scope.ninjas.push({
-      name: $scope.newninja.name,
-      rate: parseInt($scope.newninja.rate),
-      belt: $scope.newninja.belt,
+      title: $scope.newninja.title,
+      today: $scope.today,
       available: true
     });
 
-    $scope.newninja.name = "";
-    $scope.newninja.rate = "";
-    $scope.newninja.belt = "";
+    $scope.data = {
+      id: userId++,
+      title: $scope.newninja.title
+    }
+    console.log('click submit')
+    console.log("DATA:")
+    console.log($scope.data)
+    $http({
+      url: 'http://localhost:3030/todos',
+      method: 'POST',
+      data: $scope.data
+    })
+    .then(function(httpResponse) {
+      console.log('response', httpResponse)
+    })
 
+    $scope.newninja.title = "";
   }
 
   $scope.ninjas = [
-    {
-      name:'yoshi',
-      belt: 'green',
-      rate: 50,
-      available: true,
-      thumb: "content/img/lauren.png"
 
-    },
-    {
-      name: 'mario',
-      belt: 'red',
-      rate: 100,
-      available: false,
-      thumb: "content/img/lauren.png"
-
-    },
-    {
-      name: 'luigi',
-      belt: 'blue',
-      rate: 300,
-      available: true,
-      thumb: "content/img/lauren.png"
-
-    },
-    {
-      name: 'naruto',
-      belt: 'orange',
-      rate: 500,
-      available: true,
-      thumb: "content/img/lauren.png"
-
-    },
-    {
-      name: 'lauren',
-      belt: 'purple',
-      rate: 6000,
-      available: true,
-      thumb: "content/img/lauren.png"
-
-    }
   ]
 }])
